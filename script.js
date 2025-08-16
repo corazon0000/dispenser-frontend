@@ -4,7 +4,7 @@ let selectedPrice = 0;
 
 // API Configuration
 const API_BASE_URL = 'http://localhost:3000';
-const MIDTRANS_CLIENT_KEY = 'MASUKKAN_CLIENT_KEY_ANDA';
+const MIDTRANS_CLIENT_KEY = 'Mid-client-OOmIVTacWGWDSb82';
 
 // DOM Elements
 const drinksSection = document.getElementById('drinks-section');
