@@ -1,0 +1,177 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ScanDRINK - Smart Dispenser</title>
+    <link rel="stylesheet" href="style.css">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <!-- Midtrans Snap.js -->
+    <script src="https://app.sandbox.midtrans.com/snap/snap.js" data-client-key="MASUKKAN_CLIENT_KEY_ANDA"></script>
+</head>
+<body>
+    <div class="app-container">
+        <!-- Header -->
+        <header class="header">
+            <div class="logo-container">
+                <img src="assets/ScanDRINK.png" alt="ScanDRINK Logo" class="logo-img">
+                <h1 class="brand-name">ScanDRINK</h1>
+            </div>
+        </header>
+
+        <main class="main-content">
+            <!-- Welcome Section -->
+            <section class="welcome-section">
+                <div class="welcome-card">
+                    <div class="welcome-animation">
+                        <img src="assets/drink-animation.gif" alt="Drink Animation" class="drink-gif">
+                    </div>
+                    <h2>Selamat Datang!</h2>
+                    <p>Pilih minuman favorit Anda dan nikmati kemudahan pembayaran digital</p>
+                </div>
+            </section>
+
+            <!-- Drinks Selection -->
+            <section class="drinks-section" id="drinks-section">
+                <div class="section-header">
+                    <h2><i class="fas fa-glass-water"></i> Pilih Minuman</h2>
+                    <p>Semua minuman segar dan berkualitas</p>
+                </div>
+                
+                <div class="drinks-grid">
+                    <div class="drink-card" data-drink="Air Putih" data-price="1">
+                        <div class="drink-image">
+                            <img src="assets/water-bottle.png" alt="Air Putih" class="drink-photo">
+                            <div class="drink-overlay">
+                                <div class="drink-icon"></div>
+                            </div>
+                        </div>
+                        <div class="drink-info">
+                            <h3>Air Putih</h3>
+                            <p class="drink-desc">Kesegaran setiap saat</p>
+                            <div class="price-tag">
+                                <span class="currency">Rp</span>
+                                <span class="amount">1</span>
+                            </div>
+                        </div>
+                        <button class="select-btn" onclick="selectDrink('Air Putih', 1)">
+                            <i class="fas fa-shopping-cart"></i>
+                            <span>Pilih</span>
+                        </button>
+                    </div>
+                    
+                    <div class="drink-card" data-drink="Teh" data-price="1">
+                        <div class="drink-image">
+                            <img src="assets/tea-cup.jpeg" alt="Teh" class="drink-photo">
+                            <div class="drink-overlay">
+                                <div class="drink-icon"></div>
+                            </div>
+                        </div>
+                        <div class="drink-info">
+                            <h3>Teh</h3>
+                            <p class="drink-desc">Kesegaran rasa teh pilihan</p>
+                            <div class="price-tag">
+                                <span class="currency">Rp</span>
+                                <span class="amount">1</span>
+                            </div>
+                        </div>
+                        <button class="select-btn" onclick="selectDrink('Teh', 1)">
+                            <i class="fas fa-shopping-cart"></i>
+                            <span>Pilih</span>
+                        </button>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Order Confirmation -->
+            <section class="order-section" id="order-section">
+                <div class="order-card">
+                    <div class="order-header">
+                        <i class="fas fa-receipt"></i>
+                        <h2>Konfirmasi Pesanan</h2>
+                    </div>
+                    
+                    <div class="order-details">
+                        <div class="selected-item">
+                            <div class="item-info">
+                                <span class="item-name" id="selected-drink-name"></span>
+                                <span class="item-desc">Quantity: 1</span>
+                            </div>
+                            <div class="item-price" id="selected-drink-price"></div>
+                        </div>
+                        
+                        <div class="order-summary">
+                            <div class="summary-row">
+                                <span>Subtotal</span>
+                                <span id="subtotal">Rp 1</span>
+                            </div>
+                            <div class="summary-row total">
+                                <span>Total</span>
+                                <span id="total">Rp 1</span>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="order-actions">
+                        <button class="pay-btn" id="pay-btn" onclick="processPurchase()">
+                            <i class="fas fa-credit-card"></i>
+                            <span>Bayar Sekarang</span>
+                            <div class="btn-shine"></div>
+                        </button>
+                        <button class="cancel-btn" onclick="cancelOrder()">
+                            <i class="fas fa-times"></i>
+                            <span>Batal</span>
+                        </button>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Payment Status -->
+            <section class="status-section" id="status-section">
+                <div class="status-card">
+                    <div class="status-icon-container">
+                        <div class="status-icon" id="status-icon">
+                            <i class="fas fa-check-circle"></i>
+                        </div>
+                        <div class="status-particles"></div>
+                    </div>
+                    <div class="status-message" id="status-message"></div>
+                    <button class="back-btn" onclick="resetOrder()">
+                        <i class="fas fa-redo"></i>
+                        <span>Pesan Lagi</span>
+                    </button>
+                </div>
+            </section>
+
+            <!-- Loading -->
+            <section class="loading-section" id="loading-section">
+                <div class="loading-card">
+                    <div class="loading-animation">
+                        <div class="loading-container">
+                            <div class="coffee-cup">
+                                <div class="coffee-liquid"></div>
+                                <div class="coffee-steam">
+                                    <div class="steam-line steam-1"></div>
+                                    <div class="steam-line steam-2"></div>
+                                    <div class="steam-line steam-3"></div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="spinner"></div>
+                        <div class="loading-dots">
+                            <span></span>
+                            <span></span>
+                            <span></span>
+                        </div>
+                    </div>
+                    <h3>Memproses Pembayaran</h3>
+                    <p>Mohon tunggu sebentar...</p>
+                </div>
+            </section>
+        </main>
+    </div>
+
+    <script src="script.js"></script>
+</body>
+</html>
