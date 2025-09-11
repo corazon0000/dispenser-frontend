@@ -3,7 +3,7 @@ let selectedDrink = null;
 let selectedPrice = 0;
 
 // API Configuration
-const API_BASE_URL = 'https://f40d5ce70130.ngrok-free.app';
+const API_BASE_URL = 'https://b6916207e0b3.ngrok-free.app';
 const MIDTRANS_CLIENT_KEY = 'Mid-client-OOmIVTacWGWDSb82';
 
 // DOM Elements
