@@ -3,8 +3,8 @@ let selectedDrink = null;
 let selectedPrice = 0;
 
 // API Configuration
-const API_BASE_URL = 'https://1de84040485d.ngrok-free.app'; // Ngrok URL untuk backend
-const MIDTRANS_CLIENT_KEY = 'Mid-client-t-tLqHkzhLl4jEDD'; // Client Key production baru
+const API_BASE_URL = 'https://1de84040485d.ngrok-free.app';
+const MIDTRANS_CLIENT_KEY = 'Mid-client-OOmIVTacWGWDSb82';
 
 // DOM Elements
 const drinksSection = document.getElementById('drinks-section');
@@ -160,7 +160,7 @@ async function processPurchase() {
 
 // Function to create transaction via API with retry mechanism
 async function createTransaction(drinkName, price, retryCount = 0) {
-    const maxRetries = 2; // Kurangi retry untuk efisiensi di production
+    const maxRetries = 3;
     
     try {
         const requestBody = {
@@ -204,26 +204,39 @@ async function createTransaction(drinkName, price, retryCount = 0) {
             return createTransaction(drinkName, price, retryCount + 1);
         }
         
-        throw error; // Tidak pakai mock data di production
+        // Fallback untuk development/testing
+        if (error.message.includes('fetch') || error.message.includes('Failed to fetch')) {
+            console.warn('🔧 Backend tidak tersedia, menggunakan mock data untuk testing');
+            return {
+                token: 'mock-token-for-testing-' + Date.now(),
+                order_id: 'SCANDRINK-' + Date.now(),
+                gross_amount: price
+            };
+        }
+        
+        throw error;
     }
 }
 
-// Function to show payment success
+// Function to show payment success with celebration animation
 function showPaymentSuccess(result = {}) {
     statusMessage.textContent = '🎉 Pembayaran berhasil! Minuman sedang diproses...';
     statusMessage.className = 'status-message success';
     statusIcon.className = 'status-icon success';
     statusIcon.innerHTML = '<i class="fas fa-check-circle"></i>';
+    
     showSection('status');
+    
+    // Add celebration effect
     createConfetti();
     createFloatingParticles();
     
-    // Add haptic feedback
+    // Vibration feedback
     if (navigator.vibrate) {
         navigator.vibrate([100, 50, 100]);
     }
     
-    // Reset order after delay
+    // Reset after showing success
     resetOrder();
     
     console.log('🎉 Payment completed successfully!');
@@ -235,21 +248,24 @@ function showPaymentPending(result = {}) {
     statusMessage.className = 'status-message pending';
     statusIcon.className = 'status-icon pending';
     statusIcon.innerHTML = '<i class="fas fa-clock"></i>';
+    
     showSection('status');
     resetPayButton();
+    
     console.log('⏳ Payment is pending');
 }
 
-// Function to show payment error
+// Function to show payment error with helpful message
 function showPaymentError(message, result = {}) {
     statusMessage.textContent = `❌ ${message}`;
     statusMessage.className = 'status-message error';
     statusIcon.className = 'status-icon error';
     statusIcon.innerHTML = '<i class="fas fa-exclamation-circle"></i>';
+    
     showSection('status');
     resetPayButton();
     
-    // Add haptic feedback
+    // Vibration feedback for error
     if (navigator.vibrate) {
         navigator.vibrate([200, 100, 200]);
     }
@@ -263,13 +279,13 @@ function resetPayButton() {
     payBtn.innerHTML = '<i class="fas fa-credit-card"></i><span>Bayar Sekarang</span><div class="btn-shine"></div>';
 }
 
-// Function to reset order
+// Function to reset order completely
 function resetOrder() {
     selectedDrink = null;
     selectedPrice = 0;
     resetPayButton();
     
-    // Remove selection visual feedback
+    // Remove visual feedback with animation
     document.querySelectorAll('.drink-card').forEach(card => {
         card.classList.remove('selected');
         const btn = card.querySelector('.select-btn');
