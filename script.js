@@ -3,8 +3,8 @@ let selectedDrink = null;
 let selectedPrice = 0;
 
 // API Configuration
-const API_BASE_URL = 'https://c903b1df8a63.ngrok-free.app'; // Ganti dengan domain backend production (e.g., Render/Heroku)
-const MIDTRANS_CLIENT_KEY = 'Mid-client-tFqeQEeAryIBCsUG'; // Client Key production seperti yang kamu berikan
+const API_BASE_URL = 'https://1de84040485d.ngrok-free.app'; // Ngrok URL untuk backend
+const MIDTRANS_CLIENT_KEY = 'Mid-client-t-tLqHkzhLl4jEDD'; // Client Key production baru
 
 // DOM Elements
 const drinksSection = document.getElementById('drinks-section');
