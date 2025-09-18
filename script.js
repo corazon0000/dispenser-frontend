@@ -3,7 +3,7 @@ let selectedDrink = null;
 let selectedPrice = 0;
 
 // API Configuration
-const API_BASE_URL = 'https://bd1ac3824195.ngrok-free.app'; // Ngrok URL untuk backend
+const API_BASE_URL = 'https://d7d2a153b9d8.ngrok-free.app'; // Ngrok URL untuk backend
 const MIDTRANS_CLIENT_KEY = 'Mid-client-t-tLqHkzhLl4jEDD'; // Client Key production baru
 
 // DOM Elements
@@ -506,4 +506,5 @@ if ('performance' in window) {
         }, 0);
     });
 }
+
 
