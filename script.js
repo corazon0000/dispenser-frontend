@@ -3,7 +3,7 @@ let selectedDrink = null;
 let selectedPrice = 0;
 
 // API Configuration
-const API_BASE_URL = 'http://146.190.90.95:3000'; 
+const API_BASE_URL = 'https://scandrink.my.id'; 
 const MIDTRANS_CLIENT_KEY = 'Mid-client-t-tLqHkzhLl4jEDD'; 
 
 // DOM Elements
@@ -506,6 +506,7 @@ if ('performance' in window) {
         }, 0);
     });
 }
+
 
 
 
