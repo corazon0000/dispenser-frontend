@@ -3,7 +3,7 @@ let selectedDrink = null;
 let selectedPrice = 0;
 
 // API Configuration
-const API_BASE_URL = 'https://d74d48ce99f8.ngrok-free.app'; 
+const API_BASE_URL = 'https://7ac121b17eaa.ngrok-free.app'; 
 const MIDTRANS_CLIENT_KEY = 'Mid-client-t-tLqHkzhLl4jEDD'; 
 
 // DOM Elements
@@ -506,5 +506,6 @@ if ('performance' in window) {
         }, 0);
     });
 }
+
 
 
