@@ -364,12 +364,18 @@
       renderTable(filtered);
     }
 
+    // ✅ fix logika: pending tidak dihitung di total & pendapatan
     function updateStats(data) {
-      const totalTransaksi = data.length;
       const today = new Date();
       const startOfDay = new Date(today.getFullYear(), today.getMonth(), today.getDate());
 
-      const todayTransactions = data.filter(tx => new Date(tx.created_at) >= startOfDay);
+      const successfulTransactions = data.filter(tx => {
+        const status = tx.status.toLowerCase();
+        return status === "settlement" || status === "capture";
+      });
+
+      const totalTransaksi = successfulTransactions.length;
+      const todayTransactions = successfulTransactions.filter(tx => new Date(tx.created_at) >= startOfDay);
       const totalHariIni = todayTransactions.reduce((sum, tx) => sum + Number(tx.price || 0), 0);
       const pendingCount = data.filter(tx => tx.status.toLowerCase().includes("pending")).length;
 
