@@ -12,15 +12,68 @@
       --bg: #f2f6fc;
       --success: #28a745;
     }
-    body { font-family: "Poppins", sans-serif; background-color: var(--bg); margin: 0; padding: 0; color: #333; min-height: 100vh; display: flex; justify-content: center; align-items: center; }
-    .container { width: 95%; max-width: 1000px; background: #fff; border-radius: 16px; box-shadow: 0 6px 20px rgba(0,0,0,0.1); overflow: hidden; animation: fadeIn 0.5s ease-in-out; }
-    @keyframes fadeIn { from {opacity: 0; transform: translateY(20px);} to {opacity: 1; transform: translateY(0);} }
-    header { background-color: var(--primary); color: white; padding: 20px; display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; }
+    body {
+      font-family: "Poppins", sans-serif;
+      background-color: var(--bg);
+      margin: 0;
+      padding: 0;
+      color: #333;
+      min-height: 100vh;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+    }
+    .container {
+      width: 95%;
+      max-width: 1000px;
+      background: #fff;
+      border-radius: 16px;
+      box-shadow: 0 6px 20px rgba(0,0,0,0.1);
+      overflow: hidden;
+      animation: fadeIn 0.5s ease-in-out;
+    }
+    @keyframes fadeIn {
+      from {opacity: 0; transform: translateY(20px);}
+      to {opacity: 1; transform: translateY(0);}
+    }
+    header {
+      background-color: var(--primary);
+      color: white;
+      padding: 20px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      flex-wrap: wrap;
+    }
     header h2 { margin: 0; font-weight: 600; font-size: 1.4rem; }
-    .logout-btn { background-color: var(--danger); color: white; border: none; padding: 8px 14px; border-radius: 6px; cursor: pointer; font-size: 14px; transition: background 0.3s; }
+    .logout-btn {
+      background-color: var(--danger);
+      color: white;
+      border: none;
+      padding: 8px 14px;
+      border-radius: 6px;
+      cursor: pointer;
+      font-size: 14px;
+      transition: background 0.3s;
+    }
     .logout-btn:hover { background-color: #b02a37; }
-    .stats { display: flex; justify-content: space-around; background: #f9fbff; padding: 20px 10px; flex-wrap: wrap; }
-    .stat-box { background: white; border: 1px solid #e0e0e0; border-radius: 10px; padding: 15px 25px; margin: 8px; box-shadow: 0 2px 8px rgba(0,0,0,0.05); min-width: 130px; text-align: center; }
+    .stats {
+      display: flex;
+      justify-content: space-around;
+      background: #f9fbff;
+      padding: 20px 10px;
+      flex-wrap: wrap;
+    }
+    .stat-box {
+      background: white;
+      border: 1px solid #e0e0e0;
+      border-radius: 10px;
+      padding: 15px 25px;
+      margin: 8px;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+      min-width: 130px;
+      text-align: center;
+    }
     .stat-box h3 { margin: 5px 0; color: var(--primary); font-size: 20px; }
     .stat-box p { margin: 0; color: #666; }
     .filters { text-align: center; padding: 10px; }
@@ -31,12 +84,36 @@
     th, td { padding: 12px 10px; border-bottom: 1px solid #e0e0e0; text-align: left; }
     th { background-color: var(--primary); color: white; position: sticky; top: 0; z-index: 1; }
     tr:hover td { background-color: #f9fbff; }
-    .login-container { width: 90%; max-width: 400px; background: white; border-radius: 12px; box-shadow: 0 4px 15px rgba(0,0,0,0.1); padding: 40px 30px; text-align: center; animation: fadeIn 0.6s ease-in-out; }
+    .login-container {
+      width: 90%;
+      max-width: 400px;
+      background: white;
+      border-radius: 12px;
+      box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+      padding: 40px 30px;
+      text-align: center;
+      animation: fadeIn 0.6s ease-in-out;
+    }
     .login-container h2 { color: var(--primary); margin-bottom: 25px; }
     input { width: 100%; padding: 12px; margin: 10px 0; border: 1px solid #ccc; border-radius: 8px; font-size: 15px; }
-    button { background-color: var(--primary); color: white; border: none; padding: 12px 18px; border-radius: 8px; cursor: pointer; font-size: 15px; transition: background 0.3s; }
+    button {
+      background-color: var(--primary);
+      color: white;
+      border: none;
+      padding: 12px 18px;
+      border-radius: 8px;
+      cursor: pointer;
+      font-size: 15px;
+      transition: background 0.3s;
+    }
     button:hover { background-color: var(--primary-dark); }
     #login-error { color: red; margin-top: 10px; display: none; }
+
+    /* WARNA STATUS */
+    .status-success { color: #28a745; font-weight: bold; }
+    .status-pending { color: #ffc107; font-weight: bold; }
+    .status-failed { color: #dc3545; font-weight: bold; }
+
     @media (max-width: 768px) {
       header h2 { font-size: 1.1rem; }
       .filters { display: flex; flex-direction: column; gap: 8px; }
@@ -106,124 +183,111 @@
     </div>
   </div>
 
-  <script>
-    const BACKEND_URL = "https://scandrink.my.id";
-    const USERNAME = "admin";
-    const PASSWORD = "123";
-    let transactionsData = [];
+<script>
+const BACKEND_URL = "https://scandrink.my.id";
+const USERNAME = "admin";
+const PASSWORD = "123";
+let transactionsData = {}; // key: order_id, value: transaksi
 
-    function login() {
-      const user = document.getElementById("username").value.trim();
-      const pass = document.getElementById("password").value.trim();
-      if (user === USERNAME && pass === PASSWORD) {
-        localStorage.setItem("admin_logged_in", "true");
-        showAdminPage();
-      } else {
-        document.getElementById("login-error").style.display = "block";
+function login() {
+  const user = document.getElementById("username").value.trim();
+  const pass = document.getElementById("password").value.trim();
+  if (user === USERNAME && pass === PASSWORD) {
+    localStorage.setItem("admin_logged_in", "true");
+    showAdminPage();
+  } else {
+    document.getElementById("login-error").style.display = "block";
+  }
+}
+
+function logout() {
+  localStorage.removeItem("admin_logged_in");
+  location.reload();
+}
+
+function showAdminPage() {
+  document.getElementById("login-page").style.display = "none";
+  document.getElementById("admin-page").style.display = "block";
+  loadTransactions(true);
+
+  // 🔄 Auto-update setiap 2 detik
+  setInterval(() => loadTransactions(false), 2000);
+}
+
+// Jika fullLoad=true, render seluruh tabel, kalau false hanya update transaksi baru/status berubah
+async function loadTransactions(fullLoad = false) {
+  try {
+    const res = await fetch(`${BACKEND_URL}/transactions?admin_token=haiiniadmintoken123`);
+    if (!res.ok) throw new Error("Gagal ambil data");
+    const data = await res.json();
+
+    let updated = false;
+
+    data.forEach(tx => {
+      const existing = transactionsData[tx.order_id];
+      if (!existing || existing.status !== tx.status) {
+        transactionsData[tx.order_id] = tx;
+        updated = true;
       }
+    });
+
+    if (fullLoad || updated) {
+      renderTable(Object.values(transactionsData));
+      updateStats(Object.values(transactionsData));
     }
+  } catch (err) {
+    console.error(err);
+  }
+}
 
-    function logout() {
-      localStorage.removeItem("admin_logged_in");
-      location.reload();
-    }
+function renderTable(data) {
+  const tbody = document.getElementById("transactions-body");
+  if (data.length === 0) {
+    tbody.innerHTML = `<tr><td colspan="5">Tidak ada transaksi ditemukan</td></tr>`;
+    return;
+  }
 
-    function showAdminPage() {
-      document.getElementById("login-page").style.display = "none";
-      document.getElementById("admin-page").style.display = "block";
-      loadTransactions();
+  tbody.innerHTML = data.map(tx => {
+    let statusClass = "";
+    const statusLower = (tx.status || "").toLowerCase();
+    if (statusLower === "success") statusClass = "status-success";
+    else if (statusLower === "pending") statusClass = "status-pending";
+    else if (statusLower === "failed") statusClass = "status-failed";
 
-      // ✅ Auto-refresh setiap 2 detik
-      setInterval(loadTransactions, 2000);
-    }
+    return `
+      <tr id="row-${tx.order_id}">
+        <td>${tx.order_id}</td>
+        <td>${tx.item_name}</td>
+        <td>Rp ${Number(tx.price).toLocaleString('id-ID')}</td>
+        <td class="${statusClass}">${tx.status}</td>
+        <td>${new Date(tx.created_at).toLocaleString("id-ID")}</td>
+      </tr>
+    `;
+  }).join("");
+}
 
-    async function loadTransactions() {
-      const tbody = document.getElementById("transactions-body");
-      tbody.innerHTML = `<tr><td colspan="5">Mengambil data...</td></tr>`;
-      try {
-        const res = await fetch(`${BACKEND_URL}/transactions?admin_token=haiiniadmintoken123`);
-        if (!res.ok) throw new Error("Gagal ambil data");
-        const data = await res.json();
-        transactionsData = data;
-        renderTable(data);
-        updateStats(data);
-      } catch (err) {
-        tbody.innerHTML = `<tr><td colspan="5" style="color:red;">Gagal memuat data!</td></tr>`;
-        console.error(err);
-      }
-    }
+function updateStats(data) {
+  const today = new Date();
+  const startOfDay = new Date(today.getFullYear(), today.getMonth(), today.getDate());
 
-    function renderTable(data) {
-      const tbody = document.getElementById("transactions-body");
-      if (data.length === 0) {
-        tbody.innerHTML = `<tr><td colspan="5">Tidak ada transaksi ditemukan</td></tr>`;
-        return;
-      }
-      tbody.innerHTML = data.map(tx => `
-        <tr>
-          <td>${tx.order_id}</td>
-          <td>${tx.item_name}</td>
-          <td>Rp ${Number(tx.price).toLocaleString('id-ID')}</td>
-          <td>${tx.status}</td>
-          <td>${new Date(tx.created_at).toLocaleString("id-ID")}</td>
-        </tr>
-      `).join("");
-    }
+  const successfulTransactions = data.filter(tx => (tx.status || "").toLowerCase() === "success");
 
-    function filterTable() {
-      const searchValue = document.getElementById("search").value.toLowerCase();
-      const filtered = transactionsData.filter(tx =>
-        tx.order_id.toLowerCase().includes(searchValue) ||
-        tx.item_name.toLowerCase().includes(searchValue) ||
-        tx.status.toLowerCase().includes(searchValue)
-      );
-      renderTable(filtered);
-    }
+  const totalTransaksi = successfulTransactions.length;
 
-    function applyDateFilter() {
-      const value = document.getElementById("dateFilter").value;
-      const now = new Date();
-      const startOfDay = new Date(now.getFullYear(), now.getMonth(), now.getDate());
-      let filtered = transactionsData;
+  const todayTransactions = successfulTransactions.filter(tx => new Date(tx.created_at) >= startOfDay);
+  const totalHariIni = todayTransactions.reduce((sum, tx) => sum + Number(tx.price || 0), 0);
 
-      if (value === "today") {
-        filtered = transactionsData.filter(tx => new Date(tx.created_at) >= startOfDay);
-      } else if (value === "yesterday") {
-        const yesterdayStart = new Date(startOfDay);
-        yesterdayStart.setDate(startOfDay.getDate() - 1);
-        filtered = transactionsData.filter(tx =>
-          new Date(tx.created_at) >= yesterdayStart && new Date(tx.created_at) < startOfDay
-        );
-      } else if (value === "week") {
-        const weekStart = new Date(startOfDay);
-        weekStart.setDate(startOfDay.getDate() - 7);
-        filtered = transactionsData.filter(tx => new Date(tx.created_at) >= weekStart);
-      }
-      renderTable(filtered);
-    }
+  const pendingCount = data.filter(tx => (tx.status || "").toLowerCase() === "pending").length;
 
-    function updateStats(data) {
-      const today = new Date();
-      const startOfDay = new Date(today.getFullYear(), today.getMonth(), today.getDate());
+  document.getElementById("totalTransaksi").textContent = totalTransaksi;
+  document.getElementById("totalHariIni").textContent = "Rp " + totalHariIni.toLocaleString("id-ID");
+  document.getElementById("pendingCount").textContent = pendingCount;
+}
 
-      const successfulTransactions = data.filter(tx => {
-        const status = tx.status.toLowerCase();
-        return status === "success";
-      });
+if (localStorage.getItem("admin_logged_in") === "true") {
+  showAdminPage();
+}
+</script>
 
-      const totalTransaksi = successfulTransactions.length;
-      const todayTransactions = successfulTransactions.filter(tx => new Date(tx.created_at) >= startOfDay);
-      const totalHariIni = todayTransactions.reduce((sum, tx) => sum + Number(tx.price || 0), 0);
-      const pendingCount = data.filter(tx => tx.status.toLowerCase() === "pending").length;
-
-      document.getElementById("totalTransaksi").textContent = totalTransaksi;
-      document.getElementById("totalHariIni").textContent = "Rp " + totalHariIni.toLocaleString("id-ID");
-      document.getElementById("pendingCount").textContent = pendingCount;
-    }
-
-    if (localStorage.getItem("admin_logged_in") === "true") {
-      showAdminPage();
-    }
-  </script>
 </body>
 </html>
