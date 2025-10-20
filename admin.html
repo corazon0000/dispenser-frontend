@@ -272,7 +272,7 @@
   </div>
 
   <script>
-    const BACKEND_URL = "https://scandrink.my.id"; // ubah jika domain backend beda
+    const BACKEND_URL = "https://scandrink.my.id";
     const USERNAME = "admin";
     const PASSWORD = "123";
     let transactionsData = [];
@@ -303,7 +303,7 @@
       const tbody = document.getElementById("transactions-body");
       tbody.innerHTML = `<tr><td colspan="5">Mengambil data...</td></tr>`;
       try {
-        const res = await fetch(`${BACKEND_URL}/transactions?admin_token=GantiDenganTokenAdminYangKuat123`);
+        const res = await fetch(`${BACKEND_URL}/transactions?admin_token=haiiniadmintoken123`);
         if (!res.ok) throw new Error("Gagal ambil data");
         const data = await res.json();
         transactionsData = data;
@@ -378,7 +378,6 @@
       document.getElementById("pendingCount").textContent = pendingCount;
     }
 
-    // auto login jika sudah login
     if (localStorage.getItem("admin_logged_in") === "true") {
       showAdminPage();
     }
