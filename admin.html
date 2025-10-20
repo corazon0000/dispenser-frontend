@@ -5,85 +5,207 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Admin Panel - ScanDrink</title>
   <style>
+    :root {
+      --primary: #0078d7;
+      --primary-dark: #005fa3;
+      --danger: #dc3545;
+      --bg: #f2f6fc;
+      --success: #28a745;
+    }
+
     body {
       font-family: "Poppins", sans-serif;
-      background-color: #f3f7fc;
+      background-color: var(--bg);
       margin: 0;
       padding: 0;
       color: #333;
+      min-height: 100vh;
+      display: flex;
+      justify-content: center;
+      align-items: center;
     }
 
-    .login-container, .admin-container {
-      max-width: 600px;
-      margin: 100px auto;
+    .container {
+      width: 95%;
+      max-width: 1000px;
+      background: #fff;
+      border-radius: 16px;
+      box-shadow: 0 6px 20px rgba(0,0,0,0.1);
+      overflow: hidden;
+      animation: fadeIn 0.5s ease-in-out;
+    }
+
+    @keyframes fadeIn {
+      from {opacity: 0; transform: translateY(20px);}
+      to {opacity: 1; transform: translateY(0);}
+    }
+
+    header {
+      background-color: var(--primary);
+      color: white;
+      padding: 20px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      flex-wrap: wrap;
+    }
+
+    header h2 {
+      margin: 0;
+      font-weight: 600;
+      font-size: 1.4rem;
+    }
+
+    .logout-btn {
+      background-color: var(--danger);
+      color: white;
+      border: none;
+      padding: 8px 14px;
+      border-radius: 6px;
+      cursor: pointer;
+      font-size: 14px;
+      transition: background 0.3s;
+    }
+    .logout-btn:hover {
+      background-color: #b02a37;
+    }
+
+    .stats {
+      display: flex;
+      justify-content: space-around;
+      background: #f9fbff;
+      padding: 20px 10px;
+      flex-wrap: wrap;
+    }
+
+    .stat-box {
       background: white;
-      border-radius: 12px;
-      box-shadow: 0 4px 12px rgba(0,0,0,0.1);
-      padding: 30px;
+      border: 1px solid #e0e0e0;
+      border-radius: 10px;
+      padding: 15px 25px;
+      margin: 8px;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+      min-width: 130px;
       text-align: center;
     }
 
-    h2 {
-      color: #0078d7;
-      margin-bottom: 20px;
+    .stat-box h3 {
+      margin: 5px 0;
+      color: var(--primary);
+      font-size: 20px;
+    }
+    .stat-box p {
+      margin: 0;
+      color: #666;
     }
 
-    input {
-      width: 80%;
+    .filters {
+      text-align: center;
       padding: 10px;
-      margin: 10px 0;
+    }
+    .filters input {
+      padding: 8px;
+      border-radius: 6px;
       border: 1px solid #ccc;
+      width: 200px;
+      margin-right: 10px;
+    }
+    .filters select {
+      padding: 8px;
       border-radius: 6px;
-      font-size: 16px;
+      border: 1px solid #ccc;
     }
 
-    button {
-      background-color: #0078d7;
-      color: white;
-      border: none;
-      padding: 10px 20px;
-      border-radius: 6px;
-      cursor: pointer;
-      font-size: 16px;
-      transition: background 0.3s;
-    }
-
-    button:hover {
-      background-color: #005fa3;
+    .content {
+      padding: 20px;
+      overflow-x: auto;
     }
 
     table {
       width: 100%;
       border-collapse: collapse;
-      margin-top: 20px;
+      min-width: 700px;
     }
 
     th, td {
-      padding: 10px;
-      border-bottom: 1px solid #ddd;
+      padding: 12px 10px;
+      border-bottom: 1px solid #e0e0e0;
+      text-align: left;
     }
 
     th {
-      background-color: #0078d7;
+      background-color: var(--primary);
       color: white;
+      position: sticky;
+      top: 0;
+      z-index: 1;
     }
 
-    tr:hover {
-      background-color: #f1f1f1;
+    tr:hover td {
+      background-color: #f9fbff;
     }
 
-    .logout-btn {
-      float: right;
-      background-color: #dc3545;
-      margin-top: -50px;
+    .login-container {
+      width: 90%;
+      max-width: 400px;
+      background: white;
+      border-radius: 12px;
+      box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+      padding: 40px 30px;
+      text-align: center;
+      animation: fadeIn 0.6s ease-in-out;
     }
 
-    @media (max-width: 600px) {
-      table {
-        font-size: 12px;
+    .login-container h2 {
+      color: var(--primary);
+      margin-bottom: 25px;
+    }
+
+    input {
+      width: 100%;
+      padding: 12px;
+      margin: 10px 0;
+      border: 1px solid #ccc;
+      border-radius: 8px;
+      font-size: 15px;
+    }
+
+    button {
+      background-color: var(--primary);
+      color: white;
+      border: none;
+      padding: 12px 18px;
+      border-radius: 8px;
+      cursor: pointer;
+      font-size: 15px;
+      transition: background 0.3s;
+    }
+
+    button:hover {
+      background-color: var(--primary-dark);
+    }
+
+    #login-error {
+      color: red;
+      margin-top: 10px;
+      display: none;
+    }
+
+    @media (max-width: 768px) {
+      header h2 {
+        font-size: 1.1rem;
       }
-      input {
+      .filters {
+        display: flex;
+        flex-direction: column;
+        gap: 8px;
+      }
+      .filters input, .filters select {
         width: 100%;
+        margin: 0;
+      }
+      th, td {
+        font-size: 13px;
       }
     }
   </style>
@@ -96,33 +218,64 @@
     <input type="text" id="username" placeholder="Username" /><br />
     <input type="password" id="password" placeholder="Password" /><br />
     <button onclick="login()">Login</button>
-    <p id="login-error" style="color:red;display:none;">Username atau password salah!</p>
+    <p id="login-error">Username atau password salah!</p>
   </div>
 
   <!-- ADMIN PAGE -->
-  <div class="admin-container" id="admin-page" style="display:none;">
-    <h2>Daftar Transaksi</h2>
-    <button class="logout-btn" onclick="logout()">Logout</button>
-    <table id="transactions-table">
-      <thead>
-        <tr>
-          <th>Order ID</th>
-          <th>Menu</th>
-          <th>Harga</th>
-          <th>Status</th>
-          <th>Tanggal</th>
-        </tr>
-      </thead>
-      <tbody id="transactions-body">
-        <tr><td colspan="5">Memuat data...</td></tr>
-      </tbody>
-    </table>
+  <div class="container" id="admin-page" style="display:none;">
+    <header>
+      <h2>📊 Panel Transaksi ScanDrink</h2>
+      <button class="logout-btn" onclick="logout()">Logout</button>
+    </header>
+
+    <div class="stats">
+      <div class="stat-box">
+        <h3 id="totalTransaksi">0</h3>
+        <p>Total Transaksi</p>
+      </div>
+      <div class="stat-box">
+        <h3 id="totalHariIni">Rp 0</h3>
+        <p>Pendapatan Hari Ini</p>
+      </div>
+      <div class="stat-box">
+        <h3 id="pendingCount">0</h3>
+        <p>Menunggu Pembayaran</p>
+      </div>
+    </div>
+
+    <div class="filters">
+      <input type="text" id="search" placeholder="Cari Order ID / Menu / Status..." onkeyup="filterTable()" />
+      <select id="dateFilter" onchange="applyDateFilter()">
+        <option value="all">Semua</option>
+        <option value="today">Hari ini</option>
+        <option value="yesterday">Kemarin</option>
+        <option value="week">Minggu ini</option>
+      </select>
+    </div>
+
+    <div class="content">
+      <table id="transactions-table">
+        <thead>
+          <tr>
+            <th>Order ID</th>
+            <th>Menu</th>
+            <th>Harga</th>
+            <th>Status</th>
+            <th>Tanggal</th>
+          </tr>
+        </thead>
+        <tbody id="transactions-body">
+          <tr><td colspan="5">Memuat data...</td></tr>
+        </tbody>
+      </table>
+    </div>
   </div>
 
   <script>
-    const BACKEND_URL = "https://scandrink.my.id"; // ganti kalau domain backend beda
+    const BACKEND_URL = "https://scandrink.my.id"; // ubah jika domain backend beda
     const USERNAME = "admin";
     const PASSWORD = "123";
+    let transactionsData = [];
 
     function login() {
       const user = document.getElementById("username").value.trim();
@@ -153,27 +306,79 @@
         const res = await fetch(`${BACKEND_URL}/transactions?admin_token=GantiDenganTokenAdminYangKuat123`);
         if (!res.ok) throw new Error("Gagal ambil data");
         const data = await res.json();
-        if (data.length === 0) {
-          tbody.innerHTML = `<tr><td colspan="5">Belum ada transaksi</td></tr>`;
-          return;
-        }
-
-        tbody.innerHTML = data.map(tx => `
-          <tr>
-            <td>${tx.order_id}</td>
-            <td>${tx.item_name}</td>
-            <td>Rp ${tx.price}</td>
-            <td>${tx.status}</td>
-            <td>${new Date(tx.created_at).toLocaleString("id-ID")}</td>
-          </tr>
-        `).join("");
+        transactionsData = data;
+        renderTable(data);
+        updateStats(data);
       } catch (err) {
         tbody.innerHTML = `<tr><td colspan="5" style="color:red;">Gagal memuat data!</td></tr>`;
         console.error(err);
       }
     }
 
-    // auto login kalau sebelumnya sudah login
+    function renderTable(data) {
+      const tbody = document.getElementById("transactions-body");
+      if (data.length === 0) {
+        tbody.innerHTML = `<tr><td colspan="5">Tidak ada transaksi ditemukan</td></tr>`;
+        return;
+      }
+      tbody.innerHTML = data.map(tx => `
+        <tr>
+          <td>${tx.order_id}</td>
+          <td>${tx.item_name}</td>
+          <td>Rp ${Number(tx.price).toLocaleString('id-ID')}</td>
+          <td>${tx.status}</td>
+          <td>${new Date(tx.created_at).toLocaleString("id-ID")}</td>
+        </tr>
+      `).join("");
+    }
+
+    function filterTable() {
+      const searchValue = document.getElementById("search").value.toLowerCase();
+      const filtered = transactionsData.filter(tx =>
+        tx.order_id.toLowerCase().includes(searchValue) ||
+        tx.item_name.toLowerCase().includes(searchValue) ||
+        tx.status.toLowerCase().includes(searchValue)
+      );
+      renderTable(filtered);
+    }
+
+    function applyDateFilter() {
+      const value = document.getElementById("dateFilter").value;
+      const now = new Date();
+      const startOfDay = new Date(now.getFullYear(), now.getMonth(), now.getDate());
+      let filtered = transactionsData;
+
+      if (value === "today") {
+        filtered = transactionsData.filter(tx => new Date(tx.created_at) >= startOfDay);
+      } else if (value === "yesterday") {
+        const yesterdayStart = new Date(startOfDay);
+        yesterdayStart.setDate(startOfDay.getDate() - 1);
+        filtered = transactionsData.filter(tx =>
+          new Date(tx.created_at) >= yesterdayStart && new Date(tx.created_at) < startOfDay
+        );
+      } else if (value === "week") {
+        const weekStart = new Date(startOfDay);
+        weekStart.setDate(startOfDay.getDate() - 7);
+        filtered = transactionsData.filter(tx => new Date(tx.created_at) >= weekStart);
+      }
+      renderTable(filtered);
+    }
+
+    function updateStats(data) {
+      const totalTransaksi = data.length;
+      const today = new Date();
+      const startOfDay = new Date(today.getFullYear(), today.getMonth(), today.getDate());
+
+      const todayTransactions = data.filter(tx => new Date(tx.created_at) >= startOfDay);
+      const totalHariIni = todayTransactions.reduce((sum, tx) => sum + Number(tx.price || 0), 0);
+      const pendingCount = data.filter(tx => tx.status.toLowerCase().includes("pending")).length;
+
+      document.getElementById("totalTransaksi").textContent = totalTransaksi;
+      document.getElementById("totalHariIni").textContent = "Rp " + totalHariIni.toLocaleString("id-ID");
+      document.getElementById("pendingCount").textContent = pendingCount;
+    }
+
+    // auto login jika sudah login
     if (localStorage.getItem("admin_logged_in") === "true") {
       showAdminPage();
     }
