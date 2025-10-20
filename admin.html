@@ -1,0 +1,182 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Admin Panel - ScanDrink</title>
+  <style>
+    body {
+      font-family: "Poppins", sans-serif;
+      background-color: #f3f7fc;
+      margin: 0;
+      padding: 0;
+      color: #333;
+    }
+
+    .login-container, .admin-container {
+      max-width: 600px;
+      margin: 100px auto;
+      background: white;
+      border-radius: 12px;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+      padding: 30px;
+      text-align: center;
+    }
+
+    h2 {
+      color: #0078d7;
+      margin-bottom: 20px;
+    }
+
+    input {
+      width: 80%;
+      padding: 10px;
+      margin: 10px 0;
+      border: 1px solid #ccc;
+      border-radius: 6px;
+      font-size: 16px;
+    }
+
+    button {
+      background-color: #0078d7;
+      color: white;
+      border: none;
+      padding: 10px 20px;
+      border-radius: 6px;
+      cursor: pointer;
+      font-size: 16px;
+      transition: background 0.3s;
+    }
+
+    button:hover {
+      background-color: #005fa3;
+    }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      margin-top: 20px;
+    }
+
+    th, td {
+      padding: 10px;
+      border-bottom: 1px solid #ddd;
+    }
+
+    th {
+      background-color: #0078d7;
+      color: white;
+    }
+
+    tr:hover {
+      background-color: #f1f1f1;
+    }
+
+    .logout-btn {
+      float: right;
+      background-color: #dc3545;
+      margin-top: -50px;
+    }
+
+    @media (max-width: 600px) {
+      table {
+        font-size: 12px;
+      }
+      input {
+        width: 100%;
+      }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- LOGIN PAGE -->
+  <div class="login-container" id="login-page">
+    <h2>Login Admin</h2>
+    <input type="text" id="username" placeholder="Username" /><br />
+    <input type="password" id="password" placeholder="Password" /><br />
+    <button onclick="login()">Login</button>
+    <p id="login-error" style="color:red;display:none;">Username atau password salah!</p>
+  </div>
+
+  <!-- ADMIN PAGE -->
+  <div class="admin-container" id="admin-page" style="display:none;">
+    <h2>Daftar Transaksi</h2>
+    <button class="logout-btn" onclick="logout()">Logout</button>
+    <table id="transactions-table">
+      <thead>
+        <tr>
+          <th>Order ID</th>
+          <th>Menu</th>
+          <th>Harga</th>
+          <th>Status</th>
+          <th>Tanggal</th>
+        </tr>
+      </thead>
+      <tbody id="transactions-body">
+        <tr><td colspan="5">Memuat data...</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <script>
+    const BACKEND_URL = "https://scandrink.my.id"; // ganti kalau domain backend beda
+    const USERNAME = "admin";
+    const PASSWORD = "123";
+
+    function login() {
+      const user = document.getElementById("username").value.trim();
+      const pass = document.getElementById("password").value.trim();
+      if (user === USERNAME && pass === PASSWORD) {
+        localStorage.setItem("admin_logged_in", "true");
+        showAdminPage();
+      } else {
+        document.getElementById("login-error").style.display = "block";
+      }
+    }
+
+    function logout() {
+      localStorage.removeItem("admin_logged_in");
+      location.reload();
+    }
+
+    function showAdminPage() {
+      document.getElementById("login-page").style.display = "none";
+      document.getElementById("admin-page").style.display = "block";
+      loadTransactions();
+    }
+
+    async function loadTransactions() {
+      const tbody = document.getElementById("transactions-body");
+      tbody.innerHTML = `<tr><td colspan="5">Mengambil data...</td></tr>`;
+      try {
+        const res = await fetch(`${BACKEND_URL}/transactions?admin_token=GantiDenganTokenAdminYangKuat123`);
+        if (!res.ok) throw new Error("Gagal ambil data");
+        const data = await res.json();
+        if (data.length === 0) {
+          tbody.innerHTML = `<tr><td colspan="5">Belum ada transaksi</td></tr>`;
+          return;
+        }
+
+        tbody.innerHTML = data.map(tx => `
+          <tr>
+            <td>${tx.order_id}</td>
+            <td>${tx.item_name}</td>
+            <td>Rp ${tx.price}</td>
+            <td>${tx.status}</td>
+            <td>${new Date(tx.created_at).toLocaleString("id-ID")}</td>
+          </tr>
+        `).join("");
+      } catch (err) {
+        tbody.innerHTML = `<tr><td colspan="5" style="color:red;">Gagal memuat data!</td></tr>`;
+        console.error(err);
+      }
+    }
+
+    // auto login kalau sebelumnya sudah login
+    if (localStorage.getItem("admin_logged_in") === "true") {
+      showAdminPage();
+    }
+  </script>
+</body>
+</html>
