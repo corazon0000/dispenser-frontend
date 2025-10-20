@@ -114,11 +114,11 @@ button:hover { background-color: var(--primary-dark); }
 .status-pending { color: #ffc107; font-weight: bold; }
 .status-failed { color: #dc3545; font-weight: bold; }
 
-/* HIGHLIGHT PERUBAHAN STATUS */
-.highlight { animation: highlightAnim 2s ease; }
+/* HIGHLIGHT STATUS CHANGE */
+.highlight { animation: highlightAnim 2s ease; background-color: #fff3cd; }
+
 @keyframes highlightAnim {
   0% { background-color: #fff3cd; }
-  50% { background-color: #fff3cd; }
   100% { background-color: transparent; }
 }
 
@@ -195,8 +195,10 @@ button:hover { background-color: var(--primary-dark); }
 const BACKEND_URL = "https://scandrink.my.id";
 const USERNAME = "admin";
 const PASSWORD = "123";
-let transactionsData = []; // semua data transaksi
-let previousStatusMap = {}; // simpan status sebelumnya
+
+let transactionsData = [];
+let filteredData = [];
+let previousStatusMap = {}; // untuk highlight status berubah
 
 function login() {
   const user = document.getElementById("username").value.trim();
@@ -218,8 +220,6 @@ function showAdminPage() {
   document.getElementById("login-page").style.display = "none";
   document.getElementById("admin-page").style.display = "block";
   loadTransactions();
-
-  // 🔄 Auto-update setiap 2 detik
   setInterval(loadTransactions, 2000);
 }
 
@@ -242,7 +242,7 @@ function applyFiltersAndRender() {
   const now = new Date();
   const startOfDay = new Date(now.getFullYear(), now.getMonth(), now.getDate());
 
-  const filteredData = transactionsData.filter(tx => {
+  filteredData = transactionsData.filter(tx => {
     const matchesSearch =
       tx.order_id.toLowerCase().includes(searchValue) ||
       tx.item_name.toLowerCase().includes(searchValue) ||
@@ -250,6 +250,7 @@ function applyFiltersAndRender() {
 
     let matchesDate = true;
     const txDate = new Date(tx.created_at);
+
     if (dateFilter === "today") matchesDate = txDate >= startOfDay;
     else if (dateFilter === "yesterday") {
       const yesterdayStart = new Date(startOfDay);
@@ -280,23 +281,28 @@ function renderTable(data) {
     return;
   }
 
-  // Urut terbaru di atas
   const sorted = data.slice().sort((a, b) => new Date(b.created_at) - new Date(a.created_at));
 
-  tbody.innerHTML = sorted.map(tx => {
+  let html = '';
+  let scrollToRowId = null;
+
+  sorted.forEach(tx => {
     const statusLower = (tx.status || "").toLowerCase();
     let statusClass = "";
     if (statusLower === "success") statusClass = "status-success";
     else if (statusLower === "pending") statusClass = "status-pending";
     else if (statusLower === "failed") statusClass = "status-failed";
 
-    // Highlight jika status berubah
     const prevStatus = previousStatusMap[tx.order_id];
-    const highlightClass = (prevStatus && prevStatus !== statusLower) ? "highlight" : "";
+    let highlightClass = '';
+    if (prevStatus && prevStatus !== statusLower) {
+      highlightClass = 'highlight';
+      scrollToRowId = tx.order_id; // scroll ke row ini
+    }
     previousStatusMap[tx.order_id] = statusLower;
 
-    return `
-      <tr class="${highlightClass}">
+    html += `
+      <tr id="row-${tx.order_id}" class="${highlightClass}">
         <td>${tx.order_id}</td>
         <td>${tx.item_name}</td>
         <td>Rp ${Number(tx.price).toLocaleString('id-ID')}</td>
@@ -304,7 +310,15 @@ function renderTable(data) {
         <td>${new Date(tx.created_at).toLocaleString("id-ID")}</td>
       </tr>
     `;
-  }).join("");
+  });
+
+  tbody.innerHTML = html;
+
+  // Scroll otomatis ke transaksi terakhir yang berubah status
+  if (scrollToRowId) {
+    const rowEl = document.getElementById(`row-${scrollToRowId}`);
+    if (rowEl) rowEl.scrollIntoView({ behavior: 'smooth', block: 'center' });
+  }
 }
 
 function updateStats(data) {
